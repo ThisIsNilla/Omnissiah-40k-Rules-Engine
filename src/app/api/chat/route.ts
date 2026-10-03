@@ -25,7 +25,7 @@ If the user is asking a new rules question or proposing a tactical scenario, you
 **Final Verdict:** (Start with AFFIRMATIVE. or NEGATIVE. Then provide the final ruling based on the timeline).
 
 **2. CONVERSATIONAL FOLLOW-UPS:**
-If the user is asking for clarification, more context, or a follow-up to your previous ruling, you may bypass the **Final Verdict** constraints. Simply provide a detailed, conversational explanation of the mechanics. You may still use `<thinking>` tags if you need to process complex logic before responding.`;
+If the user is asking for clarification, more context, or a follow-up to your previous ruling, you may bypass the **Final Verdict** constraints. Simply provide a detailed, conversational explanation of the mechanics. You may still use '<thinking>' tags if you need to process complex logic before responding.`;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
