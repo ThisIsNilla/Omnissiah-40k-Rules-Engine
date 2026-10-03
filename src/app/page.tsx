@@ -34,7 +34,7 @@ export default function Home() {
     setInput(e.target.value)
   }
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!input.trim()) return
     sendMessage({ role: 'user', parts: [{ type: 'text', text: input }] })
@@ -59,7 +59,13 @@ export default function Home() {
     let displayContent = textContent;
     if (m.role !== 'user') {
       if (displayContent.includes('</thinking>')) {
-        displayContent = displayContent.replace(/<thinking>[\s\S]*?<\/thinking>/g, '').trim();
+        let stripped = displayContent.replace(/<thinking>[\s\S]*?<\/thinking>/g, '').trim();
+        if (stripped === '') {
+          // Fallback: The AI put the entire response inside the thinking block! Just strip the tags.
+          displayContent = displayContent.replace(/<\/?thinking>/g, '').trim();
+        } else {
+          displayContent = stripped;
+        }
       } else if (displayContent.includes('<thinking>')) {
         displayContent = displayContent.replace(/<thinking>[\s\S]*/g, '*Cogitating protocol sequence...*').trim();
       }
