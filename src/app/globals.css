@@ -63,6 +63,75 @@
   --shadow-gold-glow: 0 0 20px -3px rgba(197, 155, 39, 0.25);
   --shadow-gold-subtle: 0 0 10px -1px rgba(197, 155, 39, 0.15);
   --shadow-crimson-seal: 0 0 12px 1px rgba(190, 30, 35, 0.3);
+
+  /* Mobile Theme Variables */
+  --color-surface-container-lowest: #0d0e12;
+  --color-on-tertiary: #690006;
+  --color-on-surface: #e3e2e8;
+  --color-inverse-on-surface: #2f3035;
+  --color-secondary: #4ae176;
+  --color-outline-variant: #4e4635;
+  --color-on-secondary: #003915;
+  --color-on-error-container: #ffdad6;
+  --color-inverse-surface: #e3e2e8;
+  --color-on-tertiary-fixed-variant: #8d1515;
+  --color-secondary-fixed-dim: #4ae176;
+  --color-tertiary-fixed-dim: #ffb4ab;
+  --color-secondary-container: #00b954;
+  --color-mobile-primary: #eec14b;
+  --color-mobile-background: #121317;
+  --color-tertiary-container: #ff776b;
+  --color-tertiary-fixed: #ffdad6;
+  --color-on-tertiary-container: #760008;
+  --color-secondary-fixed: #6bff8f;
+  --color-outline: #9a907c;
+  --color-surface-container-high: #292a2e;
+  --color-surface-container-highest: #343439;
+  --color-error-container: #93000a;
+  --color-on-primary-container: #473500;
+  --color-on-primary: #3e2e00;
+  --color-surface-variant: #343439;
+  --color-inverse-primary: #775a00;
+  --color-on-surface-variant: #d1c5af;
+  --color-error: #ffb4ab;
+  --color-on-secondary-container: #004119;
+  --color-on-secondary-fixed-variant: #005321;
+  --color-surface-dim: #121317;
+  --color-on-tertiary-fixed: #410002;
+  --color-on-primary-fixed-variant: #5a4300;
+  --color-on-background: #e3e2e8;
+  --color-tertiary: #ffb4ab;
+  --color-primary-container: #c59b27;
+  --color-surface: #121317;
+  --color-surface-tint: #eec14b;
+  --color-on-secondary-fixed: #002109;
+  --color-primary-fixed-dim: #eec14b;
+  --color-on-error: #690005;
+  --color-primary-fixed: #ffdf98;
+  --color-surface-container: #1f1f24;
+  --color-surface-container-low: #1a1b20;
+  --color-on-primary-fixed: #251a00;
+  --color-surface-bright: #38393e;
+
+  --font-headline-md: "EB Garamond", serif;
+  --font-body-lg: "JetBrains Mono", monospace;
+  --font-headline-lg: "EB Garamond", serif;
+  --font-title-sm: "JetBrains Mono", monospace;
+  --font-label-sm: "JetBrains Mono", monospace;
+  --font-display-lg: "EB Garamond", serif;
+  --font-body-md: "JetBrains Mono", monospace;
+  --font-display-lg-mobile: "EB Garamond", serif;
+  --font-label-md: "JetBrains Mono", monospace;
+
+  --spacing-margin: 1.5rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-xl: 2.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-gutter-mobile: 0.5rem;
+  --spacing-gutter: 1rem;
+  --spacing-margin-mobile: 0.75rem;
+  --spacing-space-lg: 1.5rem;
 }
 
 .scanlines {
