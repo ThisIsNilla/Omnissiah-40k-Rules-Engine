@@ -1,4 +1,5 @@
 import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { streamText, embed, convertToModelMessages } from 'ai';
 import fs from 'fs';
 import path from 'path';
@@ -95,7 +96,7 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: openai('gpt-4o'),
+    model: google('gemini-3.8-flash'),
     system: injectedSystemPrompt,
     messages: modelMessages,
     temperature: 0,
