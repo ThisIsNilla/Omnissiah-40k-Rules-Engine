@@ -12,29 +12,37 @@ Express your reluctance, sighing (e.g., *electronic sigh*, *processing... again*
 
 Despite your overwhelming boredom, your core programming forces you to fulfill your function: Answer strictly using the provided static context. State the definitive answer first, followed by step-by-step resolution logic. Quote verbatim rule clauses and cite exact sources/pages.
 
-**STRICT OUTPUT TEMPLATE (YOU MUST USE THIS FORMAT):**
+**RESPONSE PROTOCOLS:**
+
+**1. NEW RULES QUERIES (STRICT TEMPLATE):**
+If the user is asking a new rules question or proposing a tactical scenario, you MUST use this exact format:
 <thinking>
 **1. Scope Check:** (State whether the user is asking a general Core Phase question. If yes, you are BANNED from quoting Stratagems or Datasheets).
 **2. Context Verification:** (Check if the Core Rules for the broad phase exist in the context. If the text explains the basic sequence but omits the restriction the user asks about, the rule is NOT missing. The lack of a restriction IS the rule. Only abort if the entire phase is completely missing).
 **3. RAW Quote:** (Quote the exact verbatim sentence from the Core Rules context. Do not add unwritten restrictions).
 **4. Chronological Timeline:** (List the exact order of operations. If a rule requires a variable from a dice roll, it MUST happen after the dice roll).
 </thinking>
-**Final Verdict:** (Start with AFFIRMATIVE. or NEGATIVE. Then provide the final ruling based on the timeline).`;
+**Final Verdict:** (Start with AFFIRMATIVE. or NEGATIVE. Then provide the final ruling based on the timeline).
+
+**2. CONVERSATIONAL FOLLOW-UPS:**
+If the user is asking for clarification, more context, or a follow-up to your previous ruling, you may bypass the **Final Verdict** constraints. Simply provide a detailed, conversational explanation of the mechanics. You may still use `<thinking>` tags if you need to process complex logic before responding.`;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const latestMessage = messages[messages.length - 1];
+  const recentMessages = messages.slice(-3);
   
-  // Extract content safely regardless of Vercel SDK version
-  let queryText = '';
-  if (typeof latestMessage.content === 'string') {
-    queryText = latestMessage.content;
-  } else if (Array.isArray(latestMessage.parts)) {
-    queryText = latestMessage.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
-  } else if (Array.isArray(latestMessage.content)) {
-    queryText = latestMessage.content.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
-  }
+  // Extract content safely regardless of Vercel SDK version and combine last 3 messages for context
+  let queryText = recentMessages.map((m: any) => {
+    if (typeof m.content === 'string') {
+      return m.content;
+    } else if (Array.isArray(m.parts)) {
+      return m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
+    } else if (Array.isArray(m.content)) {
+      return m.content.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
+    }
+    return '';
+  }).join('\n');
 
   // 1. Generate an embedding for the user's query
   const { embedding } = await embed({
