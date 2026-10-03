@@ -212,6 +212,21 @@ export default function Home() {
                       textContent = JSON.stringify(m);
                     }
 
+                    // Thematic Cogitation Filter: Hide the AI's internal logic steps
+                    let displayContent = textContent;
+                    if (m.role !== 'user') {
+                      // If the thinking block is closed, strip it out completely
+                      if (displayContent.includes('</thinking>')) {
+                        displayContent = displayContent.replace(/<thinking>[\s\S]*?<\/thinking>/g, '').trim();
+                      } else if (displayContent.includes('<thinking>')) {
+                        // If it's still streaming the thinking block, show a thematic loading state
+                        displayContent = displayContent.replace(/<thinking>[\s\S]*/g, '*Cogitating protocol sequence...*').trim();
+                      }
+                      
+                      // Strip "**Final Verdict:**" prefix so it just starts with AFFIRMATIVE/NEGATIVE
+                      displayContent = displayContent.replace(/\*\*Final Verdict:\*\*\s*/g, '');
+                    }
+
                     return (
                       <div key={m.id} className={`w-full border border-grim-border bg-grim-plate/50 backdrop-blur rounded p-4 relative ${m.role === 'user' ? 'border-l-4 border-l-grim-borderGold' : 'border-l-4 border-l-grim-gold'}`}>
                         <div className="absolute -top-2.5 left-4 px-2 bg-grim-obsidian border border-grim-border text-[9px] text-grim-gold uppercase tracking-wider font-mono flex items-center gap-1.5">
@@ -219,7 +234,7 @@ export default function Home() {
                           {m.role === 'user' ? 'TACTICAL QUERY' : 'OMNISPEX VERDICT'}
                         </div>
                         <div className="mt-1 space-y-2 text-xs font-mono text-gray-300 leading-relaxed prose prose-invert prose-p:leading-relaxed max-w-none prose-strong:text-grim-gold">
-                          <ReactMarkdown>{textContent}</ReactMarkdown>
+                          <ReactMarkdown>{displayContent}</ReactMarkdown>
                         </div>
                       </div>
                     )
