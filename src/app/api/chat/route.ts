@@ -95,7 +95,7 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: openai('gpt-4o'),
+    model: openai('gpt-4o-mini'),
     system: injectedSystemPrompt,
     messages: modelMessages,
     temperature: 0,
