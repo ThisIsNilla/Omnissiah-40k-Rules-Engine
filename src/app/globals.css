@@ -41,6 +41,64 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-grim-void: #050608;
+  --color-grim-obsidian: #0a0c10;
+  --color-grim-plate: #11141b;
+  --color-grim-border: #1f2533;
+  --color-grim-borderGold: #4a3b18;
+  --color-grim-goldLow: #785b19;
+  --color-grim-gold: #c59b27;
+  --color-grim-goldBright: #e8be48;
+  --color-grim-crimson: #8a1518;
+  --color-grim-crimsonBright: #be1e23;
+  --color-grim-amberGlow: #d97706;
+  --color-grim-emerald: #10b981;
+  --color-grim-parchment: #c9b896;
+
+  --font-gothic: "Cinzel", serif;
+  --font-gothicDeco: "Cinzel Decorative", serif;
+  --font-terminal: "Space Mono", monospace;
+
+  --shadow-gold-glow: 0 0 20px -3px rgba(197, 155, 39, 0.25);
+  --shadow-gold-subtle: 0 0 10px -1px rgba(197, 155, 39, 0.15);
+  --shadow-crimson-seal: 0 0 12px 1px rgba(190, 30, 35, 0.3);
+}
+
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0, 0, 0, 0.35) 50%,
+    rgba(0, 0, 0, 0.35)
+  );
+  background-size: 100% 4px;
+}
+
+.telemetry-grid {
+  background-image: 
+    radial-gradient(rgba(197, 155, 39, 0.08) 1px, transparent 1px),
+    linear-gradient(to right, rgba(31, 37, 51, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 37, 51, 0.25) 1px, transparent 1px);
+  background-size: 40px 40px, 20px 20px, 20px 20px;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #090b0f;
+  border-left: 1px solid #1a1f2b;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a3346;
+  border-radius: 2px;
+  border: 1px solid #4a3b18;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c59b27;
 }
 
 :root, .dark {

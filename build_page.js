@@ -1,4 +1,6 @@
+const fs = require('fs');
 
+const reactCode = `
 "use client"
 
 import { useChat } from "@ai-sdk/react"
@@ -203,13 +205,13 @@ export default function Home() {
                     if (typeof (m as any).content === "string") {
                       textContent = (m as any).content;
                     } else if (Array.isArray(m.parts)) {
-                      textContent = m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join("\n");
+                      textContent = m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join("\\n");
                     } else {
                       textContent = JSON.stringify(m);
                     }
 
                     return (
-                      <div key={m.id} className={`w-full border border-grim-border bg-grim-plate/50 backdrop-blur rounded p-4 relative ${m.role === 'user' ? 'border-l-4 border-l-grim-borderGold' : 'border-l-4 border-l-grim-gold'}`}>
+                      <div key={m.id} className={\`w-full border border-grim-border bg-grim-plate/50 backdrop-blur rounded p-4 relative \${m.role === 'user' ? 'border-l-4 border-l-grim-borderGold' : 'border-l-4 border-l-grim-gold'}\`}>
                         <div className="absolute -top-2.5 left-4 px-2 bg-grim-obsidian border border-grim-border text-[9px] text-grim-gold uppercase tracking-wider font-mono flex items-center gap-1.5">
                           <span className="h-1.5 w-1.5 rounded-full bg-grim-gold"></span>
                           {m.role === 'user' ? 'TACTICAL QUERY' : 'OMNISPEX VERDICT'}
@@ -256,3 +258,7 @@ export default function Home() {
     </>
   )
 }
+`;
+
+fs.writeFileSync('src/app/page.tsx', reactCode);
+console.log('page.tsx rewritten');

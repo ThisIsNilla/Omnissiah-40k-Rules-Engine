@@ -29,18 +29,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark`}
+      className={`${geistSans.variable} ${geistMono.variable} dark h-full bg-grim-void`}
     >
-      <body className="min-h-screen bg-background text-foreground antialiased flex flex-col">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+      </head>
+      <body className="h-full flex flex-col bg-grim-void text-grim-parchment font-terminal overflow-hidden select-none antialiased">
         <TooltipProvider>
-          <SidebarProvider>
-            <div className="flex h-screen w-full overflow-hidden">
-              <AppSidebar />
-              <main className="flex-1 flex flex-col min-w-0 relative">
-                {children}
-              </main>
-            </div>
-          </SidebarProvider>
+          {children}
         </TooltipProvider>
       </body>
     </html>
