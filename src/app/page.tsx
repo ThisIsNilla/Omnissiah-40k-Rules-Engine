@@ -8,9 +8,17 @@ import ReactMarkdown from "react-markdown"
 export default function Home() {
   const { messages, status, sendMessage } = useChat()
   const [input, setInput] = useState("")
+  const [factions, setFactions] = useState<string[]>([])
   
   const isLoading = status === 'submitted' || status === 'streaming'
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    fetch('/api/rulebooks')
+      .then(res => res.json())
+      .then(data => setFactions(data.factions || []))
+      .catch(console.error)
+  }, [])
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -70,7 +78,7 @@ export default function Home() {
         <div className="flex items-center space-x-3 text-xs ml-4">
           <div className="hidden lg:flex items-center space-x-4 text-[11px] text-gray-400 font-mono shrink-0">
             <div className="flex items-center gap-2">
-              <span className="font-gothic font-bold text-grim-gold text-lg leading-none">42</span>
+              <span className="font-gothic font-bold text-grim-gold text-lg leading-none">{factions.length + 3}</span>
               <div className="flex flex-col text-[9px] uppercase tracking-widest text-gray-400 leading-tight select-none">
                 <span className="">Sacred</span>
                 <span className="">Codices</span>
@@ -126,21 +134,17 @@ export default function Home() {
             <div>
               <div className="px-2 py-1 text-[10px] uppercase text-grim-goldLow font-semibold tracking-wider flex items-center justify-between">
                 <span>Ingested Faction Indexes</span>
-                <span className="text-[9px] text-gray-600">8 REGISTERED</span>
+                <span className="text-[9px] text-gray-600">{factions.length} REGISTERED</span>
               </div>
               <div className="mt-1 space-y-0.5">
-                <a className="flex items-center justify-between px-2 py-1.5 rounded hover:bg-grim-plate/60 text-gray-300 hover:text-gray-100 transition group" href="#">
-                  <div className="flex items-center space-x-2 truncate">
-                    <span className="text-amber-500/80 group-hover:text-grim-gold">◈</span>
-                    <span className="truncate">Adeptus Astartes: Space Marines</span>
-                  </div>
-                </a>
-                <a className="flex items-center justify-between px-2 py-1.5 rounded hover:bg-grim-plate/60 text-gray-300 hover:text-gray-100 transition group" href="#">
-                  <div className="flex items-center space-x-2 truncate">
-                    <span className="text-amber-500/80 group-hover:text-grim-gold">◈</span>
-                    <span className="truncate">Adeptus Custodes: Auric Solar</span>
-                  </div>
-                </a>
+                {factions.map(faction => (
+                  <a key={faction} className="flex items-center justify-between px-2 py-1.5 rounded hover:bg-grim-plate/60 text-gray-300 hover:text-gray-100 transition group" href="#">
+                    <div className="flex items-center space-x-2 truncate">
+                      <span className="text-amber-500/80 group-hover:text-grim-gold">◈</span>
+                      <span className="truncate">{faction}</span>
+                    </div>
+                  </a>
+                ))}
               </div>
             </div>
           </nav>
