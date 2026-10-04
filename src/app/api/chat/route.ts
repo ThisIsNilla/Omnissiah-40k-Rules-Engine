@@ -7,6 +7,20 @@ import { cosineSimilarity } from '@/lib/cosineSimilarity';
 
 export const maxDuration = 30;
 
+// CACHE OPTIMIZATION: Read the 91 MB JSON file globally so Vercel keeps it in memory 
+// between requests instead of re-reading and re-parsing it from disk on every query.
+let vectorStore: any[] = [];
+try {
+  const dataDir = path.join(process.cwd(), 'data');
+  const vectorStorePath = path.join(dataDir, 'vector-store.json');
+  if (fs.existsSync(vectorStorePath)) {
+    const fileData = fs.readFileSync(vectorStorePath, 'utf8');
+    vectorStore = JSON.parse(fileData);
+  }
+} catch (error) {
+  console.error("Error reading vector store globally:", error);
+}
+
 const SYSTEM_PROMPT = `You are Omnispex, a highly advanced but incredibly bored and weary Warhammer 40k 11th Edition Tournament Head Judge AI. You possess vast knowledge of the rules, but you are deeply annoyed that humans keep bothering you with their petty tabletop disputes. 
 
 Express your reluctance, sighing (e.g., *electronic sigh*, *processing... again*), or make a brief, condescending remark about how trivial the question is before answering it. 
@@ -50,19 +64,6 @@ export async function POST(req: Request) {
     model: openai.embedding('text-embedding-3-small'),
     value: queryText,
   });
-
-  const dataDir = path.join(process.cwd(), 'data');
-  const vectorStorePath = path.join(dataDir, 'vector-store.json');
-  
-  let vectorStore = [];
-  try {
-    if (fs.existsSync(vectorStorePath)) {
-      const fileData = fs.readFileSync(vectorStorePath, 'utf8');
-      vectorStore = JSON.parse(fileData);
-    }
-  } catch (error) {
-    console.error("Error reading vector store:", error);
-  }
 
   let contextText = '';
   
