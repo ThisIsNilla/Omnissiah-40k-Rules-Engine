@@ -58,18 +58,12 @@ export default function Home() {
 
     let displayContent = textContent;
     if (m.role !== 'user') {
-      if (displayContent.includes('</thinking>')) {
-        let stripped = displayContent.replace(/<thinking>[\s\S]*?<\/thinking>/g, '').trim();
-        if (stripped === '') {
-          // Fallback: The AI put the entire response inside the thinking block! Just strip the tags.
-          displayContent = displayContent.replace(/<\/?thinking>/g, '').trim();
-        } else {
-          displayContent = stripped;
-        }
-      } else if (displayContent.includes('<thinking>')) {
-        displayContent = displayContent.replace(/<thinking>[\s\S]*/g, '*Cogitating protocol sequence...*').trim();
-      }
-      displayContent = displayContent.replace(/\*\*Final Verdict:\*\*\s*/g, '');
+      // Convert XML thinking tags into a thematic Markdown blockquote so the user can 
+      // safely read the AI's internal logic without the risk of the regex deleting the answer.
+      displayContent = displayContent
+        .replace(/<thinking>/g, '> *Cogitating protocol sequence...*\n> \n> ')
+        .replace(/<\/thinking>/g, '\n\n')
+        .replace(/\*\*Final Verdict:\*\*\s*/g, '\n\n**Final Verdict:**\n');
     }
     return displayContent;
   }
