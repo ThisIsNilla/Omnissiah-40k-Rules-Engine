@@ -31,82 +31,86 @@ If the user is asking a new rules question or proposing a tactical scenario, you
 If the user is asking for clarification, more context, or a follow-up to your previous ruling, you may bypass the **Final Verdict** constraints. Simply provide a detailed, conversational explanation of the mechanics. You may still use '<thinking>' tags if you need to process complex logic before responding.`;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  try {
+    const { messages } = await req.json();
 
-  const recentMessages = messages.slice(-3);
-  
-  // Extract content safely regardless of Vercel SDK version and combine last 3 messages for context
-  let queryText = recentMessages.map((m: any) => {
-    if (typeof m.content === 'string') {
-      return m.content;
-    } else if (Array.isArray(m.parts)) {
-      return m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
-    } else if (Array.isArray(m.content)) {
-      return m.content.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n');
-    }
-    return '';
-  }).join('\n');
-
-  // 1. Generate an embedding for the user's query
-  const { embedding } = await embed({
-    model: openai.embedding('text-embedding-3-small'),
-    value: queryText,
-  });
-
-  // CACHE OPTIMIZATION: Lazily load the 91MB JSON file into memory on the first request.
-  // This keeps it cached in Vercel's serverless container for subsequent requests, bypassing disk reads!
-  if (!vectorStoreCache) {
-    try {
-      const dataDir = path.join(process.cwd(), 'data');
-      const vectorStorePath = path.join(dataDir, 'vector-store.json');
-      if (fs.existsSync(vectorStorePath)) {
-        const fileData = fs.readFileSync(vectorStorePath, 'utf8');
-        vectorStoreCache = JSON.parse(fileData);
+    const recentMessages = messages.slice(-3);
+    
+    // Extract content safely regardless of Vercel SDK version and combine last 3 messages for context
+    let queryText = recentMessages.map((m: any) => {
+      if (typeof m.content === 'string') {
+        return m.content;
+      } else if (Array.isArray(m.parts)) {
+        return m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\\n');
+      } else if (Array.isArray(m.content)) {
+        return m.content.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\\n');
       }
-    } catch (error) {
-      console.error("Error reading vector store:", error);
-      vectorStoreCache = [];
-    }
-  }
-  
-  const vectorStore = vectorStoreCache || [];
-  let contextText = '';
-  
-  if (vectorStore.length > 0) {
-    const scoredChunks = vectorStore.map((item: any) => {
-      let score = cosineSimilarity(embedding, item.embedding);
-      
-      // ALGORITHMIC FIX: Tabletop RAG often drowns out Core mechanics with hyper-specific Faction keywords.
-      // We artificially boost the similarity score of foundational rules so they always surface.
-      if (item.metadata.source === 'Universal Rules Update') score += 0.08;
-      else if (item.metadata.source === 'Core Rules') score += 0.04;
-      
-      return { ...item, score };
+      return '';
+    }).join('\\n');
+
+    // 1. Generate an embedding for the user's query
+    const { embedding } = await embed({
+      model: openai.embedding('text-embedding-3-small'),
+      value: queryText,
     });
 
-    scoredChunks.sort((a: any, b: any) => b.score - a.score);
-    const topChunks = scoredChunks.slice(0, 35);
-
-    contextText = topChunks.map((chunk: any) => {
-      // DYNAMIC FILTERING: If the user isn't asking about a Stratagem, completely strip Stratagem chunks 
-      // from the context to prevent the LLM from cherry-picking them to validate 10th edition biases.
-      if (!queryText.toLowerCase().includes('stratagem') && chunk.text.includes('STRATAGEM')) {
-        return '';
+    // CACHE OPTIMIZATION: Lazily load the 91MB JSON file into memory on the first request.
+    // This keeps it cached in Vercel's serverless container for subsequent requests, bypassing disk reads!
+    if (!vectorStoreCache) {
+      try {
+        const dataDir = path.join(process.cwd(), 'data');
+        const vectorStorePath = path.join(dataDir, 'vector-store.json');
+        if (fs.existsSync(vectorStorePath)) {
+          const fileData = fs.readFileSync(vectorStorePath, 'utf8');
+          vectorStoreCache = JSON.parse(fileData);
+        }
+      } catch (error) {
+        console.error("Error reading vector store:", error);
+        vectorStoreCache = [];
       }
-      return `[Source: ${chunk.metadata.source} (${chunk.metadata.file})]\n${chunk.text}`;
-    }).filter((t: string) => t !== '').join('\n\n---\n\n');
+    }
+    
+    const vectorStore = vectorStoreCache || [];
+    let contextText = '';
+    
+    if (vectorStore.length > 0) {
+      const scoredChunks = vectorStore.map((item: any) => {
+        let score = cosineSimilarity(embedding, item.embedding);
+        
+        // ALGORITHMIC FIX: Tabletop RAG often drowns out Core mechanics with hyper-specific Faction keywords.
+        // We artificially boost the similarity score of foundational rules so they always surface.
+        if (item.metadata.source === 'Universal Rules Update') score += 0.08;
+        else if (item.metadata.source === 'Core Rules') score += 0.04;
+        
+        return { ...item, score };
+      });
+
+      scoredChunks.sort((a: any, b: any) => b.score - a.score);
+      const topChunks = scoredChunks.slice(0, 35);
+
+      contextText = topChunks.map((chunk: any) => {
+        // DYNAMIC FILTERING: If the user isn't asking about a Stratagem, completely strip Stratagem chunks 
+        // from the context to prevent the LLM from cherry-picking them to validate 10th edition biases.
+        if (!queryText.toLowerCase().includes('stratagem') && chunk.text.includes('STRATAGEM')) {
+          return '';
+        }
+        return `[Source: ${chunk.metadata.source} (${chunk.metadata.file})]\\n${chunk.text}`;
+      }).filter((t: string) => t !== '').join('\\n\\n---\\n\\n');
+    }
+
+    const injectedSystemPrompt = `${SYSTEM_PROMPT}\\n\\n**STATIC CONTEXT:**\\n${contextText || "No context found. The rulebooks may not be ingested yet."}`;
+
+    const modelMessages = await convertToModelMessages(messages);
+
+    const result = streamText({
+      model: google('gemini-3.8-flash'),
+      system: injectedSystemPrompt,
+      messages: modelMessages,
+      temperature: 0,
+    });
+
+    return result.toUIMessageStreamResponse();
+  } catch (error: any) {
+    return new Response(error.message || String(error), { status: 500 });
   }
-
-  const injectedSystemPrompt = `${SYSTEM_PROMPT}\n\n**STATIC CONTEXT:**\n${contextText || "No context found. The rulebooks may not be ingested yet."}`;
-
-  const modelMessages = await convertToModelMessages(messages);
-
-  const result = streamText({
-    model: google('gemini-3.8-flash'),
-    system: injectedSystemPrompt,
-    messages: modelMessages,
-    temperature: 0,
-  });
-
-  return result.toUIMessageStreamResponse();
 }
