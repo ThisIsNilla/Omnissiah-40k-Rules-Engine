@@ -224,7 +224,7 @@ export default function Home() {
                           <span className="h-1.5 w-1.5 rounded-full bg-grim-gold"></span>
                           {m.role === 'user' ? 'TACTICAL QUERY' : 'OMNISPEX VERDICT'}
                         </div>
-                        <div className="mt-1 space-y-2 text-xs font-mono text-gray-300 leading-relaxed prose prose-invert prose-p:leading-relaxed max-w-none prose-strong:text-grim-gold">
+                        <div className="mt-1 space-y-2 text-xs font-mono text-gray-100 leading-relaxed prose prose-invert prose-p:leading-relaxed prose-p:text-gray-100 max-w-none prose-strong:text-grim-gold">
                           <ReactMarkdown>{renderMessageContent(m)}</ReactMarkdown>
                         </div>
                       </div>
@@ -370,7 +370,7 @@ export default function Home() {
                       {m.role === 'user' ? 'TACTICAL QUERY' : 'OMNISPEX VERDICT'}
                     </span>
                   </div>
-                  <div className="mt-2 text-[12px] leading-relaxed prose prose-invert prose-p:leading-relaxed max-w-none prose-strong:text-[#eec14b]">
+                  <div className="mt-2 text-[12px] leading-relaxed prose prose-invert prose-p:leading-relaxed prose-p:text-[#ffffff] max-w-none prose-strong:text-[#eec14b]">
                     <ReactMarkdown>{renderMessageContent(m)}</ReactMarkdown>
                   </div>
                 </div>
