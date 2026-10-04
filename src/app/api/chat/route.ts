@@ -80,7 +80,7 @@ export async function POST(req: Request) {
     });
 
     scoredChunks.sort((a: any, b: any) => b.score - a.score);
-    const topChunks = scoredChunks.slice(0, 15);
+    const topChunks = scoredChunks.slice(0, 35);
 
     contextText = topChunks.map((chunk: any) => {
       // DYNAMIC FILTERING: If the user isn't asking about a Stratagem, completely strip Stratagem chunks 
