@@ -24,7 +24,7 @@ sequenceDiagram
     
     NextJS->>RAG: Pass query vector + loaded memory
     
-    rect rgb(20, 40, 60)
+    rect rgb(230, 240, 255)
         Note over RAG: Deterministic Skill Execution
         RAG->>RAG: 1. Calculate Cosine Similarity
         RAG->>RAG: 2. Boost "Core Rules" mathematically (+0.04)
@@ -36,7 +36,7 @@ sequenceDiagram
     
     NextJS->>LLM: Pass System Prompt + Context + Query
     
-    rect rgb(60, 20, 20)
+    rect rgb(255, 230, 230)
         Note over LLM: Safety Filters Bypassed
         LLM->>LLM: Override HARM_CATEGORY_DANGEROUS_CONTENT
         LLM->>LLM: Synthesize ruling & cite verbatim sources
