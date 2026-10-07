@@ -263,8 +263,8 @@ export default function Home() {
       {/* ========================================= */}
       {/* MOBILE LAYOUT (Hidden on desktop) */}
       {/* ========================================= */}
-      <div className="md:hidden flex flex-col min-h-screen bg-[#121317] text-[#e3e2e8] font-['JetBrains_Mono'] relative">
-        <header className="fixed top-0 w-full z-50 pt-[env(safe-area-inset-top,0px)] bg-[#0d0e12]/90 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+      <div className="md:hidden flex flex-col h-full w-full absolute inset-0 bg-[#121317] text-[#e3e2e8] font-['JetBrains_Mono'] relative overflow-hidden">
+        <header className="shrink-0 w-full z-50 pt-[env(safe-area-inset-top,0px)] bg-[#0d0e12]/90 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
           <div className="h-16 px-4 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <button aria-label="Toggle Sacred Codices Archive" className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-[#292a2e]/60 text-[#eec14b] hover:bg-[#343439] transition-colors">
@@ -290,7 +290,7 @@ export default function Home() {
           </div>
         </header>
 
-        <main className="flex flex-col relative w-full pt-16 pb-[100px]" ref={mobileScrollRef}>
+        <main className="flex-1 overflow-y-auto flex flex-col relative w-full pb-[100px]" ref={mobileScrollRef}>
           <div className="pointer-events-none fixed inset-0 opacity-[0.035] bg-[radial-gradient(circle_at_50%_0%,_#eec14b_0%,_transparent_75%)] z-0"></div>
           
           <section className="relative z-10 px-3 pt-1 pb-2 flex items-center justify-between gap-1 bg-[#0d0e12]">
