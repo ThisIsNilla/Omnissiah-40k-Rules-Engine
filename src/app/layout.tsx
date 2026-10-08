@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { Analytics } from "@vercel/analytics/react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body className="h-full flex flex-col bg-grim-void text-grim-parchment font-terminal overflow-hidden select-none antialiased">
         <TooltipProvider>
           {children}
+          <Analytics />
         </TooltipProvider>
       </body>
     </html>
